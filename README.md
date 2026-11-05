@@ -4,6 +4,25 @@ Fully automated dashboard for US$0.00 → 24 months.
 
 [Português](readmePT.md)
 
+## What the application does, end to end
+
+The application combines a local FastAPI dashboard (`app.py`) with a Playwright browser automation engine (`automation_engine.py`). Its intended result is to activate and stack Google AI promotional offers, then optionally cancel automatic renewal and record the subscription status.
+
+1. **Configure the session.** The dashboard saves the target region, plan, automatic-renewal cancellation preference, proxy template and payment card in `config.json`.
+2. **Load accounts.** Import Google credentials, optionally including a recovery email, a TOTP secret and an account-specific proxy. Existing accounts are updated when a matching normalized email is found. New accounts enter the pending queue.
+3. **Choose execution.** Run one account or a sequential batch. The backend also accepts a starting step to skip earlier stages. The dashboard exposes logs, current steps, status and screenshots; accounts can be reset or removed, and stop requests are checked between pipeline stages.
+4. **Prepare an isolated browser profile.** The engine validates required card fields, opens Chrome with a persistent profile per account, connects through Playwright and applies the selected proxy when configured. It attempts to identify the browser's outgoing IP and country before continuing.
+5. **Sign in.** The engine fills Google login fields and attempts supported recovery-email, password and TOTP challenges using the imported account data.
+6. **Attempt the promotional sequence.** It inspects Google Play subscriptions and attempts a 12-month offer followed by two 6-month offers, aiming for 24 months in total. The offer payloads also include a YouTube Premium trial add-on. The code modifies Google One page requests using embedded offer identifiers, handles payment-card entry and checks checkout text for a zero-cost amount. It uses existing subscription information to skip some stages and retries certain checkout attempts.
+7. **Handle renewal and collect evidence.** If automatic cancellation is enabled, it attempts to cancel renewal in Google Play. It then revisits subscriptions, captures a final screenshot, extracts an expiration date when recognized, and records the detected plan and completion status.
+8. **Keep the result available.** Account updates and results are written back to `config.json`; browser profiles remain in `profiles/`, and screenshots in `screenshots/`. Runtime logs are kept in memory. Exceptions handled by the pipeline are reported as account errors.
+
+### Scope and current limitations
+
+This describes the implemented flow, not a verified entitlement or guarantee of free service. Offer availability, eligibility, checkout behavior and the final expiration date depend on Google. The script contains fixed 2027/2028 date checks and page-text selectors, so its completion status and screenshots should be checked against the actual subscription page.
+
+The full browser workflow currently targets Windows: Chrome discovery and process-management commands are Windows-specific. During cloud onboarding, only dependency installation and the Linux dashboard/API were validated; Google sign-in, checkout, offer stacking and cancellation were not executed.
+
 ## System requirements
 
 1. Windows 10 or 11.

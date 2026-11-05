@@ -4,6 +4,25 @@ Painel totalmente automatizado para US$0,00 → 24 meses.
 
 [English](README.md)
 
+## O que a aplicação faz de ponta a ponta
+
+A aplicação combina um painel local em FastAPI (`app.py`) com um motor de automação de navegador em Playwright (`automation_engine.py`). Seu objetivo é ativar e acumular ofertas promocionais do Google AI, depois cancelar opcionalmente a renovação automática e registrar o estado da assinatura.
+
+1. **Configurar a sessão.** O painel salva a região de destino, o plano, a preferência de cancelamento da renovação automática, o modelo de proxy e o cartão em `config.json`.
+2. **Carregar as contas.** Importe as credenciais Google, opcionalmente com e-mail de recuperação, chave TOTP e proxy específico por conta. Contas existentes são atualizadas quando o e-mail normalizado corresponde. Contas novas entram na fila como pendentes.
+3. **Escolher a execução.** Execute uma conta ou um lote sequencial. O backend também aceita uma etapa inicial para pular fases anteriores. O painel apresenta logs, etapa atual, estado e capturas de tela; permite redefinir ou remover contas, e os pedidos de parada são verificados entre as etapas do fluxo.
+4. **Preparar um perfil de navegador isolado.** O motor valida os campos obrigatórios do cartão, abre o Chrome com um perfil persistente por conta, conecta pelo Playwright e aplica o proxy selecionado, quando configurado. Tenta identificar o IP de saída e o país do navegador antes de continuar.
+5. **Entrar na conta.** O motor preenche o login Google e tenta resolver os desafios compatíveis de e-mail de recuperação, senha e TOTP usando os dados importados.
+6. **Tentar a sequência promocional.** Consulta as assinaturas no Google Play e tenta uma oferta de 12 meses seguida por duas de 6 meses, visando 24 meses no total. Os dados das ofertas também incluem um adicional de teste do YouTube Premium. O código modifica requisições da página do Google One com identificadores de oferta embutidos, preenche o cartão e procura um valor de custo zero no texto da janela de pagamento. Usa informações da assinatura existente para pular algumas etapas e repete certas tentativas de contratação.
+7. **Tratar a renovação e coletar evidências.** Se o cancelamento automático estiver habilitado, tenta cancelar a renovação no Google Play. Depois consulta novamente as assinaturas, captura uma tela final, extrai a data de vencimento quando reconhecida e registra o plano detectado e o estado de conclusão.
+8. **Manter o resultado disponível.** Atualizações das contas e resultados são gravados em `config.json`; perfis do navegador permanecem em `profiles/` e capturas em `screenshots/`. Os logs de execução ficam em memória. Exceções tratadas pelo fluxo são registradas como erros da conta.
+
+### Escopo e limitações atuais
+
+Esta descrição corresponde ao fluxo implementado, sem comprovar a concessão do benefício ou garantir gratuidade. Disponibilidade das ofertas, elegibilidade, comportamento do pagamento e vencimento final dependem do Google. O script contém verificações fixas de datas de 2027/2028 e seletores de texto das páginas; por isso, o estado de conclusão e as capturas devem ser conferidos na página real da assinatura.
+
+O fluxo completo de navegador atualmente depende do Windows: a localização do Chrome e os comandos de gerenciamento de processos são específicos desse sistema. Na preparação do ambiente na nuvem, foram validados apenas a instalação das dependências e o painel/API no Linux; login Google, contratação, acúmulo de ofertas e cancelamento não foram executados.
+
 ## Requisitos do sistema
 
 1. Windows 10 ou 11.
