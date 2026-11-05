@@ -2,7 +2,7 @@
 
 Fully automated dashboard for US$0.00 → 24 months.
 
-[Português](readmePT.md)
+[Português](README_Portuguese.md)
 
 ## What the application does, end to end
 
@@ -32,8 +32,8 @@ The full browser workflow currently targets Windows: Chrome discovery and proces
 
 ## Quick start
 
-1. On first use, double-click `1_首次运行_安装依赖并启动.bat` to install dependencies and start the dashboard.
-2. For subsequent use, double-click `2_启动控制台.bat`.
+1. On first use, double-click `1_install_dependencies_and_start.bat` to install dependencies and start the dashboard.
+2. For subsequent use, double-click `2_start_dashboard.bat`.
 3. Your browser will automatically open the dashboard at http://127.0.0.1:8765.
 
 ## Payment card and account setup

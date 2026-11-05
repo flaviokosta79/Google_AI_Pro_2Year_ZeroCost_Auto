@@ -32,8 +32,8 @@ O fluxo completo de navegador atualmente depende do Windows: a localização do 
 
 ## Início rápido
 
-1. No primeiro uso, dê dois cliques em `1_首次运行_安装依赖并启动.bat` para instalar as dependências e iniciar o painel.
-2. Nos próximos usos, dê dois cliques em `2_启动控制台.bat`.
+1. No primeiro uso, dê dois cliques em `1_install_dependencies_and_start.bat` para instalar as dependências e iniciar o painel.
+2. Nos próximos usos, dê dois cliques em `2_start_dashboard.bat`.
 3. O navegador abrirá automaticamente o painel em http://127.0.0.1:8765.
 
 ## Configuração do cartão e das contas
